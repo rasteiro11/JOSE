@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+
 import javax.swing.JColorChooser;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -15,7 +16,7 @@ import java.awt.event.ActionEvent;
  */
 public class GUI extends JFrame implements ActionListener {
 
-    private static final int CENTER = 14;
+    private static final int CENTER = 15;
     private static final int RADIUS = 13;
     private JLabel[][] grid;
     private JTextField removeField;
@@ -41,15 +42,15 @@ public class GUI extends JFrame implements ActionListener {
         corLads = Color.BLUE;
         corFundo = Color.BLACK;
 
-        this.grid = new JLabel[30][30];
-        this.coords.setLayout(new GridLayout(30, 30));
+        this.grid = new JLabel[31][31];
+        this.coords.setLayout(new GridLayout(31, 31));
 
-        for (int i = 0; i < 30; i++)
-            for (int j = 0; j < 30; j++) {
+        for (int i = 0; i < 31; i++)
+            for (int j = 0; j < 31; j++) {
                 this.grid[i][j] = new JLabel("");
-                this.grid[i][j].setPreferredSize(new Dimension(30, 30));
-                this.grid[i][j].setMaximumSize(new Dimension(30, 30));
-                this.grid[i][j].setMinimumSize(new Dimension(30, 30));
+                this.grid[i][j].setPreferredSize(new Dimension(31, 31));
+                this.grid[i][j].setMaximumSize(new Dimension(31, 31));
+                this.grid[i][j].setMinimumSize(new Dimension(31, 31));
                 this.grid[i][j].setBorder(BorderFactory.createLineBorder(Color.BLUE));
                 this.grid[i][j].setOpaque(true);
                 this.grid[i][j].setBackground(corFundo);
@@ -75,7 +76,21 @@ public class GUI extends JFrame implements ActionListener {
         return new Point2D(x, y);
     }
 
-    public void drawSquare(int num) {
+    public double getStep() {
+        return 2 * Math.PI / this.nIndiv;
+    }
+
+    public void drawSquare() {
+        double angle = 0;
+        double step = getStep();
+        Point2D tempPoint;
+        for (int i = 0; i < this.nIndiv; i++) {
+            tempPoint = getPosToRender(angle);
+            System.out.println("ANGLE: " + angle);
+            System.out.println(tempPoint);
+            this.grid[tempPoint.getX()][tempPoint.getY()].setBackground(Color.MAGENTA);
+            angle += step;
+        }
 
     }
 
@@ -84,7 +99,7 @@ public class GUI extends JFrame implements ActionListener {
         Object elem = e.getSource();
         if (elem == this.removeButton) {
             System.out.println("REMOVE BUTTON CLICKED");
-            drawSquare(4);
+            drawSquare();
         }
     }
 
