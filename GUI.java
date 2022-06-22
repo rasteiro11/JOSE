@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
  */
 public class GUI extends JFrame implements ActionListener {
 
-    /*Swing Library*/
+    /* Swing Library */
     private JLabel[][] grid;
     private JButton nextButton;
     private JPanel panel;
@@ -22,15 +22,31 @@ public class GUI extends JFrame implements ActionListener {
     private Color alive;
     private Color dead;
 
-    /*Mapping*/ 
+    /* Mapping */
     private final int CENTER = 15;
     private final int RADIUS = 13;
     private int nIndiv;
     private int step;
     private int kill;
-    
-    /*Data*/
+
+    /* Data */
     private ListaDuplamenteLigadaCircular joseList;
+
+    public ListaDuplamenteLigadaCircular getJoseList() {
+        return joseList;
+    }
+
+    public void setJoseList(ListaDuplamenteLigadaCircular joseList) {
+        this.joseList = joseList;
+    }
+
+    public int getnIndiv() {
+        return nIndiv;
+    }
+
+    public void setnIndiv(int nIndiv) {
+        this.nIndiv = nIndiv;
+    }
 
     public GUI(int size, int step) {
         JFrame.isDefaultLookAndFeelDecorated();
@@ -45,16 +61,15 @@ public class GUI extends JFrame implements ActionListener {
 
         this.nIndiv = size;
         this.step = step;
-        this.kill = 0;  
+        this.kill = 0;
         this.joseList = new ListaDuplamenteLigadaCircular();
 
         this.grid = new JLabel[31][31];
         this.coords.setLayout(new GridLayout(31, 31));
 
-        /*Sets up the Grid*/
+        /* Sets up the Grid */
         for (int i = 0; i < 31; i++)
-            for (int j = 0; j < 31; j++) 
-            {
+            for (int j = 0; j < 31; j++) {
                 this.grid[i][j] = new JLabel("");
                 this.grid[i][j].setPreferredSize(new Dimension(30, 30));
                 this.grid[i][j].setMaximumSize(new Dimension(30, 30));
@@ -70,7 +85,7 @@ public class GUI extends JFrame implements ActionListener {
         this.panel.setLayout(new BorderLayout());
         this.panel.add(this.coords, BorderLayout.CENTER);
 
-        /*Legenda*/
+        /* Legenda */
         JLabel explainColoralive = new JLabel("");
         JLabel explainColordead = new JLabel("");
         explainColoralive.setPreferredSize(new Dimension(30, 30));
@@ -100,17 +115,17 @@ public class GUI extends JFrame implements ActionListener {
 
         this.setContentPane(panel);
         this.setVisible(true);
+
     }
 
-    public void startJosephus()
-    {
+    public void startJosephus() {
         int x, y;
         double angle;
         Point2D aux;
-        for (int i = 0; i < this.nIndiv; i++) 
-        {
+        for (int i = 0; i < this.nIndiv; i++) {
             angle = (Math.PI * (i << 1)) / this.nIndiv; // 2 * PI * i/nIndiv
-            aux = new Point2D(angle, this.RADIUS, this.CENTER); // The OFFSET is Center + 1 just so that the grid is correct
+            aux = new Point2D(angle, this.RADIUS, this.CENTER); // The OFFSET is Center + 1 just so that the grid is
+                                                                // correct
             x = aux.getX();
             y = aux.getY();
             this.grid[x][y].setBackground(alive);
@@ -121,14 +136,13 @@ public class GUI extends JFrame implements ActionListener {
         System.out.println(this.joseList.toString());
     }
 
-    private void refresh()
-    {
-        this.kill += this.step; 
+    public void refresh() {
+        this.kill += this.step;
         this.kill %= this.joseList.getQtdNos();
 
         No search = this.joseList.getInicio();
         for (int i = 0; i < this.kill; i++)
-           search = search.getProximo();                 
+            search = search.getProximo();
         Point2D p_aux = (Point2D) search.getConteudo();
         this.grid[p_aux.getX()][p_aux.getY()].setBackground(dead);
         this.joseList.remover(search.getId());
@@ -142,13 +156,10 @@ public class GUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object elem = e.getSource();
         if (elem == this.nextButton) {
-            if(this.nIndiv > 2)
+            if (this.nIndiv > 1)
                 refresh();
-            else
-            {
-                refresh();
-                JOptionPane.showMessageDialog(null,"Individuo na possicao" + joseList.toString() + "\nsobreviveu");
-                Runtime.getRuntime().exit(0);                
+            else {
+                System.exit(0);
             }
         }
     }
