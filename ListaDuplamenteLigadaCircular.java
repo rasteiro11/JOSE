@@ -194,19 +194,19 @@ public class ListaDuplamenteLigadaCircular implements IListaDuplamenteLigadaCirc
             else {
                 noAtual.getAnterior().setProximo(noAtual.getProximo());
                 noAtual.getProximo().setAnterior(noAtual.getAnterior());
+                setQtdNos(getQtdNos() - 1);
             }
             noAtual.setAnterior(null);
             noAtual.setProximo(null);
 
         }
         // Decrementa qtidade de nos
-        setQtdNos(getQtdNos() - 1);
         return noAtual;
     }
 
     // -------------------------------------------------------------
     public String toString() {
-        String s = "[ ";
+        String s = "{ ";
         No noAtual = getInicio();  // inicia do inicio
         if(noAtual != null) {
             do {   
@@ -214,13 +214,13 @@ public class ListaDuplamenteLigadaCircular implements IListaDuplamenteLigadaCirc
                 noAtual = noAtual.getProximo();   
             } while(noAtual != getInicio());
         }
-        s = s + "]";
+        s = s + "}";
         return s;
     }
 
     // -------------------------------------------------------------
     public String toStringDoFim() {
-        String s = "[ ";
+        String s = "{ ";
         No noAtual = getFim();  // inicia no fim
 
         if(noAtual != null) {
@@ -229,7 +229,7 @@ public class ListaDuplamenteLigadaCircular implements IListaDuplamenteLigadaCirc
                 noAtual = noAtual.getAnterior(); 
             }while(noAtual != getFim());
         }
-        s = s + "]";
+        s = s + "}";
         return s;
     }
 

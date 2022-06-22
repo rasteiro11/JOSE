@@ -6,9 +6,10 @@ public class Point2D {
     private int x;
     private int y;
 
-    public Point2D(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Point2D(double angle, int RADIUS, int OFFSET) 
+    {
+        this.x = (int) Math.floor(RADIUS * Math.cos(angle) + OFFSET);
+        this.y = (int) Math.floor(RADIUS * Math.sin(angle) + OFFSET);
     }
 
     public int getX() {
@@ -29,6 +30,6 @@ public class Point2D {
 
     @Override
     public String toString() {
-        return "Point2D [x=" + x + ", y=" + y + "]";
+        return "(x,y) = (" + (this.x + 1)  + ',' + (this.y + 1) + ')';
     }
 }

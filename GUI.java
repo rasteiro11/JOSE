@@ -2,11 +2,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle;
-
-import javax.swing.JColorChooser;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -16,123 +13,143 @@ import java.awt.event.ActionEvent;
  */
 public class GUI extends JFrame implements ActionListener {
 
-    private static final int CENTER = 15;
-    private static final Color DEAD_COLOR = Color.RED;
-    private static final Color ALIVE_COLOR = Color.GREEN;
-    private static final Color GRID_COLOR = Color.BLUE;
-    private static final Color BACKGROUND_COLOR = Color.BLACK;
-    private static final int RADIUS = 13;
+    /*Swing Library*/
     private JLabel[][] grid;
     private JButton nextButton;
     private JPanel panel;
     private Container coords;
     private Container otherThings;
+    private Color alive;
+    private Color dead;
+
+    /*Mapping*/ 
+    private final int CENTER = 15;
+    private final int RADIUS = 13;
     private int nIndiv;
     private int step;
+    private int kill;
+    
+    /*Data*/
     private ListaDuplamenteLigadaCircular joseList;
 
     public GUI(int size, int step) {
         JFrame.isDefaultLookAndFeelDecorated();
-        this.setSize(1150, 1100);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.joseList = new ListaDuplamenteLigadaCircular();
+        this.setSize(900, 900);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.panel = new JPanel();
-        this.nextButton = new JButton("Next");
+        this.nextButton = new JButton("NEXT");
         this.coords = new JPanel();
         this.otherThings = new JPanel();
+        this.alive = Color.GREEN;
+        this.dead = Color.RED;
+
         this.nIndiv = size;
         this.step = step;
+        this.kill = 0;  
+        this.joseList = new ListaDuplamenteLigadaCircular();
+
         this.grid = new JLabel[31][31];
         this.coords.setLayout(new GridLayout(31, 31));
 
+        /*Sets up the Grid*/
         for (int i = 0; i < 31; i++)
-            for (int j = 0; j < 31; j++) {
+            for (int j = 0; j < 31; j++) 
+            {
                 this.grid[i][j] = new JLabel("");
-                this.grid[i][j].setPreferredSize(new Dimension(31, 31));
-                this.grid[i][j].setMaximumSize(new Dimension(31, 31));
-                this.grid[i][j].setMinimumSize(new Dimension(31, 31));
-                this.grid[i][j].setBorder(BorderFactory.createLineBorder(GRID_COLOR));
+                this.grid[i][j].setPreferredSize(new Dimension(30, 30));
+                this.grid[i][j].setMaximumSize(new Dimension(30, 30));
+                this.grid[i][j].setMinimumSize(new Dimension(30, 30));
+                this.grid[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
                 this.grid[i][j].setOpaque(true);
-                this.grid[i][j].setBackground(BACKGROUND_COLOR);
+                this.grid[i][j].setBackground(Color.BLACK);
                 this.coords.add(this.grid[i][j], 0);
             }
 
-        JLabel aliveLabel = new JLabel("ALIVE");
-        JLabel labelColorAlive = new JLabel("");
-        labelColorAlive.setPreferredSize(new Dimension(31, 31));
-        labelColorAlive.setMaximumSize(new Dimension(31, 31));
-        labelColorAlive.setMinimumSize(new Dimension(31, 31));
-        labelColorAlive.setBorder(BorderFactory.createLineBorder(GRID_COLOR));
-        labelColorAlive.setOpaque(true);
-        labelColorAlive.setBackground(ALIVE_COLOR);
-
-        JLabel deadLabel = new JLabel("DEAD");
-        JLabel labelColorDead = new JLabel("");
-        labelColorDead.setPreferredSize(new Dimension(31, 31));
-        labelColorDead.setMaximumSize(new Dimension(31, 31));
-        labelColorDead.setMinimumSize(new Dimension(31, 31));
-        labelColorDead.setBorder(BorderFactory.createLineBorder(GRID_COLOR));
-        labelColorDead.setOpaque(true);
-        labelColorDead.setBackground(DEAD_COLOR);
+        startJosephus();
 
         this.panel.setLayout(new BorderLayout());
         this.panel.add(this.coords, BorderLayout.CENTER);
+
+        /*Legenda*/
+        JLabel explainColoralive = new JLabel("");
+        JLabel explainColordead = new JLabel("");
+        explainColoralive.setPreferredSize(new Dimension(30, 30));
+        explainColoralive.setMaximumSize(new Dimension(30, 30));
+        explainColoralive.setMinimumSize(new Dimension(30, 30));
+        explainColoralive.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        explainColoralive.setOpaque(true);
+        explainColoralive.setBackground(alive);
+
+        explainColordead.setPreferredSize(new Dimension(30, 30));
+        explainColordead.setMaximumSize(new Dimension(30, 30));
+        explainColordead.setMinimumSize(new Dimension(30, 30));
+        explainColordead.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        explainColordead.setOpaque(true);
+        explainColordead.setBackground(dead);
+
+        /**/
+
         this.otherThings.add(this.nextButton);
-        this.otherThings.add(deadLabel);
-        this.otherThings.add(labelColorDead);
-        this.otherThings.add(aliveLabel);
-        this.otherThings.add(labelColorAlive);
+        this.otherThings.add(new JLabel("Vivo:"));
+        this.otherThings.add(explainColoralive);
+        this.otherThings.add(new JLabel("Morto:"));
+        this.otherThings.add(explainColordead);
         this.panel.add(this.otherThings, BorderLayout.SOUTH);
 
         this.nextButton.addActionListener(this);
 
         this.setContentPane(panel);
         this.setVisible(true);
-
-        this.drawSquare();
-
     }
 
-    public Point2D getPosToRender(double angle) {
-        int x = (int) Math.floor(RADIUS * Math.cos(angle) + CENTER);
-        int y = (int) Math.floor(RADIUS * Math.sin(angle) + CENTER);
-        return new Point2D(x, y);
-    }
-
-    public double getStep() {
-        return 2 * Math.PI / this.nIndiv;
-    }
-
-    public void drawSquare() {
-        double angle = 0;
-        double step = getStep();
-        Point2D tempPoint;
-        for (int i = 0; i < this.nIndiv; i++) {
-            tempPoint = getPosToRender(angle);
-            this.joseList.inserirFim(tempPoint);
-            System.out.println("ANGLE: " + angle);
-            System.out.println(tempPoint);
-            this.grid[tempPoint.getX()][tempPoint.getY()].setBackground(ALIVE_COLOR);
-            angle += step;
+    public void startJosephus()
+    {
+        int x, y;
+        double angle;
+        Point2D aux;
+        for (int i = 0; i < this.nIndiv; i++) 
+        {
+            angle = (Math.PI * (i << 1)) / this.nIndiv; // 2 * PI * i/nIndiv
+            aux = new Point2D(angle, this.RADIUS, this.CENTER); // The OFFSET is Center + 1 just so that the grid is correct
+            x = aux.getX();
+            y = aux.getY();
+            this.grid[x][y].setBackground(alive);
+            this.joseList.inserirFim(aux);
+            this.joseList.getFim().setId(i);
         }
-        System.out.println("THIS IS JOSE LIST");
-        System.out.println(this.joseList);
+        System.out.println(this.joseList.getQtdNos());
+        System.out.println(this.joseList.toString());
+    }
+
+    private void refresh()
+    {
+        this.kill += this.step; 
+        this.kill %= this.joseList.getQtdNos();
+
+        No search = this.joseList.getInicio();
+        for (int i = 0; i < this.kill; i++)
+           search = search.getProximo();                 
+        Point2D p_aux = (Point2D) search.getConteudo();
+        this.grid[p_aux.getX()][p_aux.getY()].setBackground(dead);
+        this.joseList.remover(search.getId());
+        this.nIndiv--;
+
+        System.out.println(this.joseList.getQtdNos());
+        System.out.println(this.joseList.toString());
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object elem = e.getSource();
         if (elem == this.nextButton) {
-            System.out.println("NEXT BUTTON PRESSED");
-            int indexToKill = this.joseList.qtdNos % this.step;
-            No tempNo = this.joseList.getInicio();
-            while (indexToKill != 0) {
-                tempNo = tempNo.getProximo();
-                indexToKill--;
+            if(this.nIndiv > 2)
+                refresh();
+            else
+            {
+                refresh();
+                JOptionPane.showMessageDialog(null,"Individuo na possicao" + joseList.toString() + "\nsobreviveu");
+                Runtime.getRuntime().exit(0);                
             }
-            Point2D point = (Point2D) tempNo.getConteudo();
-            this.grid[point.getX()][point.getY()].setBackground(DEAD_COLOR);
         }
     }
-
 }
