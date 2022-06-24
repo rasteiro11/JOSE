@@ -60,7 +60,7 @@ public class GUI extends JFrame implements ActionListener {
         this.dead = Color.RED;
 
         this.nIndiv = size;
-        this.step = step;
+        this.step = step - 1;
         this.kill = 0;
         this.joseList = new ListaDuplamenteLigadaCircular();
 
@@ -122,6 +122,7 @@ public class GUI extends JFrame implements ActionListener {
         int x, y;
         double angle;
         Point2D aux;
+        // initiate jose circle
         for (int i = 0; i < this.nIndiv; i++) {
             angle = (Math.PI * (i << 1)) / this.nIndiv; // 2 * PI * i/nIndiv
             aux = new Point2D(angle, this.RADIUS, this.CENTER);
