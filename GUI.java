@@ -124,8 +124,7 @@ public class GUI extends JFrame implements ActionListener {
         Point2D aux;
         for (int i = 0; i < this.nIndiv; i++) {
             angle = (Math.PI * (i << 1)) / this.nIndiv; // 2 * PI * i/nIndiv
-            aux = new Point2D(angle, this.RADIUS, this.CENTER); // The OFFSET is Center + 1 just so that the grid is
-                                                                // correct
+            aux = new Point2D(angle, this.RADIUS, this.CENTER);
             x = aux.getX();
             y = aux.getY();
             this.grid[x][y].setBackground(alive);
@@ -136,10 +135,12 @@ public class GUI extends JFrame implements ActionListener {
         System.out.println(this.joseList.toString());
     }
 
+    // changes the state of a alive individual
     public void refresh() {
         this.kill += this.step;
         this.kill %= this.joseList.getQtdNos();
 
+        // search for individual to be killed
         No search = this.joseList.getInicio();
         for (int i = 0; i < this.kill; i++)
             search = search.getProximo();

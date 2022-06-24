@@ -30,8 +30,10 @@ public class App {
 
         GUI gui = new GUI(size, step);
 
+        // execute logical thread
         Thread t1 = new LogicService(gui);
         t1.start();
+
         try {
             t1.join();
         } catch (InterruptedException e) {
@@ -64,6 +66,7 @@ class LogicService extends Thread {
     public void run() {
         try {
             while (this.signal) {
+                // execute thread till n indiv < 1
                 if (gui.getnIndiv() > 1) {
                     gui.refresh();
                     Thread.sleep(5000);
